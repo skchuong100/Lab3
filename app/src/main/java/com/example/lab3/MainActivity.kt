@@ -22,6 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.lab3.ui.theme.Lab3Theme
 import com.example.lab3.ModifyScreen
+import androidx.compose.ui.graphics.Color
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,24 +64,42 @@ fun AppNavGraph(navController: NavHostController) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController, viewModel: MortgageViewModel = viewModel()) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Amount: ${viewModel.formattedAmount}")
-        Text(text = "Years: ${viewModel.years.intValue}")
-        Text(text = "Interest Rate: ${"%.2f".format(viewModel.rate.value * 100)}%")
-        Text(text = "Monthly Payment: ${viewModel.formattedMonthlyPayment}")
-        Text(text = "Total Payment: ${viewModel.formattedTotalPayment}")
-        Button(
-            onClick = { navController.navigate("modify") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text(text = "MODIFY DATA")
+    val appBarColor = MaterialTheme.colorScheme.primaryContainer
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Mortgage Calculator") },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = appBarColor)
+                // Actions and navigation icon can be added here if needed
+            )
+        }
+    ) { paddingValues -> // Padding provided by the Scaffold to account for the TopAppBar
+        Column(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
+            Text(text = "Amount: ${viewModel.formattedAmount}")
+            Text(text = "Years: ${viewModel.years.value}") // Removed the incorrect intValue usage
+            Text(text = "Interest Rate: ${"%.2f".format(viewModel.rate.value * 100)}%")
+            Divider(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                thickness = 2.dp, // Set the thickness of the divider line
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Text(text = "Monthly Payment: ${viewModel.formattedMonthlyPayment}")
+            Text(text = "Total Payment: ${viewModel.formattedTotalPayment}")
+            Button(
+                onClick = { navController.navigate("modify") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+            ) {
+                Text(text = "MODIFY DATA")
+            }
         }
     }
 }
+
 
 
 
